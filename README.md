@@ -1,8 +1,10 @@
 ## 图片风格迁移
 本项目主要参考 [风格迁移三部曲](https://zhuanlan.zhihu.com/p/40322927)。由衷的感谢原博主。
 
+> 新添加了Model_server
+
 ## Install
-建议新建一个环境，主要使用的包有：numpy, cv2, pillow, pytorch, torchvision, tqdm
+建议新建一个环境，主要使用的包有：numpy, cv2, pillow, pytorch, torchvision, tqdm,flask
 
 由于需要使用GPU，因此需要配置好CUDA环境，可以参考[Pytorch 安装](https://pytorch.org/get-started/locally/)
 
@@ -66,4 +68,47 @@ python train.py coco_dataset_path style_dataset_path
 Test:
 ```bash
 python test.py
+```
+
+## Model Server
+
+基于exp2，本项目添加了一个简易的Model Server。
+
+目录：Model_Server
+结构:
+* base_model.py 模型定义,与exp2中相同
+* utils.py 辅助函数，与exp2中相同
+* server.py 基于Flask的Web App，实现在线的style transfer
+* models 训练好的模型，目前仅包括梵高的星空（Starry Night）
+* uploads 图片上传目录
+* outputs 图片输出目录
+
+> 使用前请务必安装flask
+
+启动:
+```bash
+cd model_server
+env FLASK_APP=server.py flask run
+```
+
+路由：
+1. 图片输入, ```/style```, Method: ```Post```, Input: ```Image```
+2. 图片输出, ```/imgs/img_id.jpg```, Method: ```GET```
+
+使用：其实model_server为exp2的模型提供了一个web接口。使用时只需要Post一张影像即可，转换之后，接口会跳转到输出影像的url。
+如[demo.html](model_server/demo.html)所示：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Style Transfer Demo</title>
+</head>
+<body>
+    <form action="http://your_server_url/style" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" id="file">
+    <input type="submit" value="submit">
+</form>
+</body>
+</html>
 ```
