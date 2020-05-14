@@ -33,6 +33,19 @@ def get_data_loader(path, batch_size=4, img_width=256):
         dataset, batch_size=batch_size, shuffle=True)
     return data_loader
 
+def get_dist_data_loader(path, batch_size=4, img_width=256, sampler=None):
+    data_transform = transforms.Compose([
+        transforms.Resize(img_width),
+        transforms.CenterCrop(img_width),
+        transforms.ToTensor(),
+        tensor_normalizer,
+    ])
+    dataset = datasets.ImageFolder(path, transform=data_transform)
+    data_loader = torch.utils.data.DataLoader(
+        dataset, batch_size=batch_size, sampler=sampler(dataset))
+    return data_loader
+
+
 
 def read_image(path):
     '''

@@ -19,7 +19,7 @@ def arg_parser():
     parser.add_argument('style_path',type=str)
     return parser.parse_args()
 
-torch.cuda.set_device(3)
+torch.cuda.set_device(0)
 
 args = arg_parser()
 net_base = 8

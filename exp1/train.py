@@ -25,7 +25,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 args = arg_parser()
 
-style_weight = 1e6
+style_weight = 1e7
 content_weight = 1
 train_steps = args.steps
 

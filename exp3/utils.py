@@ -31,6 +31,11 @@ def get_data_loader(path, batch_size=8, img_width=256):
         dataset, batch_size=batch_size, shuffle=True)
     return data_loader
 
+def get_dist_data_loader(path, batch_size=8, img_width=256,sampler=None):
+    dataset = datasets.ImageFolder(path, transform=get_transform(img_width))
+    data_loader = torch.utils.data.DataLoader(
+        dataset, batch_size=batch_size, sampler=sampler(dataset))
+    return data_loader
 
 def read_image(path):
     '''

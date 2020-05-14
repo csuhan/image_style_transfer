@@ -12,7 +12,8 @@
 ```bash
 git clone https://github.com/csuhan/nerual_image_style_transform.git
 cd nerual_image_style_transform
-pip install -r requirements.txt
+conda install numpy pillow pytorch torchvision cudatoolkit tqdm flask
+pip install opencv-python
 ```
 
 ## Architecture

@@ -1,21 +1,20 @@
 import argparse
 
+from tqdm import tqdm
 import torch
-import torch.nn.functional as F
 import torch.optim as optim
+import torch.nn.functional as F
 import torchvision
 from torchvision import datasets, transforms
-from tqdm import tqdm
 
 from base_model import VGG, TransformNet
-from utils import get_data_loader, gram_matrix, read_image,save_debug_image
-
-torch.cuda.set_device(2)
+from utils import get_data_loader, get_dist_data_loader, gram_matrix, read_image,save_debug_image
 
 def arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('coco_path',type=str)
     parser.add_argument('style_image',type=str)
+    parser.add_argument('--local_rank',type=int, default=0)
     parser.add_argument('-n','--model_name',default='transform_net')
     return parser.parse_args()
 
@@ -26,11 +25,12 @@ coco_path = args.coco_path
 style_image_path = args.style_image
 model_name = args.model_name
 width = 256
-batch_size = 8
-verbose_batch = 1000
+batch_size = 32
+verbose_batch = 50
 style_weight = 1e5
 content_weight = 1
 tv_weight = 1e-6
+lr = 1e-3
 net_base = 32
 epoches = 5
 
@@ -45,7 +45,7 @@ style_features = vgg16(style_img)
 style_grams = [gram_matrix(x).detach() for x in style_features]
 
 transform_net = TransformNet(net_base).cuda()
-optimizer = optim.Adam(transform_net.parameters(), 1e-3)
+optimizer = optim.Adam(transform_net.parameters(), lr)
 transform_net.train()
 
 n_batch = len(data_loader)
